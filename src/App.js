@@ -1,23 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react';
+import { getQuotesByAuthor, getRandomQuote } from './apis';
+import './App.scss';
+import Quote from './components/Quote';
+import QuoteList from './components/QuoteList';
 
 function App() {
+  const [quote, setQuote] = useState([]);
+  const [authorQuotes, setAuthorQuotes] = useState([]);
+  const [show, setShow] = useState({ quote: true, quoteList: false });
+
+  const generateRandomQuote = () => {
+    getRandomQuote().then((res) => {
+      setQuote(res.data.data[0]);
+    });
+    setShow({ quote: true, quoteList: false });
+  };
+
+  const getAuthorQuotes = () => {
+    console.log(quote.quoteAuthor);
+    getQuotesByAuthor(quote.quoteAuthor).then((res) => {
+      setAuthorQuotes(res.data.data);
+    });
+    console.log(authorQuotes);
+    setShow({ quote: false, quoteList: true });
+  };
+
+  useEffect(() => {
+    generateRandomQuote();
+  }, []);
+
+  const screen = show.quote ? (
+    <>
+      <Quote text={quote.quoteText} />
+      <div className='quote-author' onClick={getAuthorQuotes}>
+        <span className='author'>{quote.quoteAuthor}</span>
+        <span className='gern'>{quote.quoteGenre}</span>
+      </div>
+    </>
+  ) : (
+    <QuoteList list={authorQuotes} author={quote.quoteAuthor} />
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='container'>
+      {screen}
+      <button onClick={generateRandomQuote} className='random'>
+        random <span class='material-icons md-36'>autorenew</span>
+      </button>
     </div>
   );
 }
