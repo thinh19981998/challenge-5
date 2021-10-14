@@ -7,13 +7,13 @@ import QuoteList from './components/QuoteList';
 function App() {
   const [quote, setQuote] = useState([]);
   const [authorQuotes, setAuthorQuotes] = useState([]);
-  const [show, setShow] = useState({ quote: true, quoteList: false });
+  const [show, setShow] = useState(true);
 
   const generateRandomQuote = () => {
     getRandomQuote().then((res) => {
       setQuote(res.data.data[0]);
     });
-    setShow({ quote: true, quoteList: false });
+    setShow(true);
   };
 
   const getAuthorQuotes = () => {
@@ -22,14 +22,14 @@ function App() {
       setAuthorQuotes(res.data.data);
     });
     console.log(authorQuotes);
-    setShow({ quote: false, quoteList: true });
+    setShow(false);
   };
 
   useEffect(() => {
     generateRandomQuote();
   }, []);
 
-  const screen = show.quote ? (
+  const screen = show ? (
     <>
       <Quote text={quote.quoteText} />
       <div className='quote-author' onClick={getAuthorQuotes}>
