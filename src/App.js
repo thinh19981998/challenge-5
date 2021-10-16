@@ -8,28 +8,34 @@ function App() {
   const [quote, setQuote] = useState([]);
   const [authorQuotes, setAuthorQuotes] = useState([]);
   const [show, setShow] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const generateRandomQuote = () => {
-    getRandomQuote().then((res) => {
+  const generateRandomQuote = async () => {
+    setIsLoading(true);
+    await getRandomQuote().then((res) => {
       setQuote(res.data.data[0]);
     });
     setShow(true);
+    setIsLoading(false);
   };
 
-  const getAuthorQuotes = () => {
-    console.log(quote.quoteAuthor);
-    getQuotesByAuthor(quote.quoteAuthor).then((res) => {
+  const getAuthorQuotes = async () => {
+    setIsLoading(true);
+    await getQuotesByAuthor(quote.quoteAuthor).then((res) => {
       setAuthorQuotes(res.data.data);
     });
-    console.log(authorQuotes);
     setShow(false);
+    setIsLoading(false);
   };
 
   useEffect(() => {
+    setIsLoading(true);
     generateRandomQuote();
   }, []);
 
-  const screen = show ? (
+  const screen = isLoading ? (
+    <h1>Loading...</h1>
+  ) : show ? (
     <>
       <Quote text={quote.quoteText} />
       <div className='quote-author' onClick={getAuthorQuotes}>

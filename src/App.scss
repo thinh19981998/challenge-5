@@ -8,13 +8,13 @@
 
 .random {
   position: fixed;
-  width: 66px;
-  height: 22px;
   right: 50px;
   top: 31px;
   display: flex;
   align-items: center;
-
+  background: transparent;
+  border: none;
+  cursor: pointer;
   font-family: Raleway;
   font-style: normal;
   font-weight: 500;
@@ -30,10 +30,10 @@
   justify-content: center;
   flex-direction: column;
   width: 614px;
-  height: 151px;
   padding: 50px 30px;
   padding-left: 100px;
   cursor: pointer;
+  transition: all 0.2s ease-in;
 
   & span {
     display: block;
