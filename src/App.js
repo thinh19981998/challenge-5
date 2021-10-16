@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getQuotesByAuthor, getRandomQuote } from './apis';
 import './App.scss';
 import Quote from './components/Quote';
+import QuoteInfo from './components/QuoteInfo';
 import QuoteList from './components/QuoteList';
 
 function App() {
@@ -38,10 +39,7 @@ function App() {
   ) : show ? (
     <>
       <Quote text={quote.quoteText} />
-      <div className='quote-author' onClick={getAuthorQuotes}>
-        <span className='author'>{quote.quoteAuthor}</span>
-        <span className='gern'>{quote.quoteGenre}</span>
-      </div>
+      <QuoteInfo quote={quote} getAuthorQuotes={getAuthorQuotes} />
     </>
   ) : (
     <QuoteList list={authorQuotes} author={quote.quoteAuthor} />
