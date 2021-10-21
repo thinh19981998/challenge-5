@@ -7,6 +7,10 @@ import QuoteList from './components/QuoteList';
 
 function App() {
   const [quote, setQuote] = useState([]);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPage: null,
+  });
   const [authorQuotes, setAuthorQuotes] = useState([]);
   const [show, setShow] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -18,19 +22,42 @@ function App() {
     });
     setShow(true);
     setIsLoading(false);
+    setPagination({
+      currentPage: 1,
+      totalPage: null,
+    });
   };
 
-  const getAuthorQuotes = async () => {
+  const getAuthorQuotes = async (page) => {
     setIsLoading(true);
-    await getQuotesByAuthor(quote.quoteAuthor).then((res) => {
+    await getQuotesByAuthor(quote.quoteAuthor, page).then((res) => {
       setAuthorQuotes(res.data.data);
+      setPagination({
+        ...pagination,
+        totalPage: res.data.pagination.totalPages,
+      });
     });
     setShow(false);
     setIsLoading(false);
   };
 
+  const nextPage = () => {
+    setPagination({
+      ...pagination,
+      currentPage: pagination.currentPage++,
+    });
+    getAuthorQuotes(pagination.currentPage);
+  };
+
+  const previousPage = () => {
+    setPagination({
+      ...pagination,
+      currentPage: pagination.currentPage--,
+    });
+    getAuthorQuotes(pagination.currentPage);
+  };
+
   useEffect(() => {
-    setIsLoading(true);
     generateRandomQuote();
   }, []);
 
@@ -42,7 +69,15 @@ function App() {
       <QuoteInfo quote={quote} getAuthorQuotes={getAuthorQuotes} />
     </>
   ) : (
-    <QuoteList list={authorQuotes} author={quote.quoteAuthor} />
+    <QuoteList
+      list={authorQuotes}
+      author={quote.quoteAuthor}
+      pagination={pagination}
+      nextPage={nextPage}
+      previousPage={previousPage}
+      currentPage={pagination.currentPage}
+      totalPage={pagination.totalPage}
+    />
   );
 
   return (
